@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>arXiv Paper Chat - Local Edition</title>
+    <title>arXiv Paper Chat</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -13,73 +13,95 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState } = React;
 
-        // API Configuration
-        const API_URL = 'http://localhost:5000';
-
-        // Icons
-        const Upload = ({ size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="17 8 12 3 7 8"></polyline>
-                <line x1="12" y1="3" x2="12" y2="15"></line>
+        // Lucide icons as SVG components
+        const FileText = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
         );
 
-        const Send = ({ size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        const Zap = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
             </svg>
         );
 
-        const Download = ({ size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        const ExternalLink = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+        );
+
+        const Download = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
         );
 
-        const BookOpen = ({ size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        const BookOpen = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
             </svg>
         );
 
-        const Brain = ({ size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        const Brain = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"></path>
                 <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"></path>
             </svg>
         );
 
-        const Shield = ({ size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        const Shield = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
         );
 
-        const Eye = ({ size = 24 }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        const Eye = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
             </svg>
         );
 
-        function LocalArxivChat() {
+        function ArxivChatApp() {
+            const [selectedBot, setSelectedBot] = useState(null);
             const [selectedPaper, setSelectedPaper] = useState(null);
             const [view, setView] = useState('papers');
-            const [pdfUploaded, setPdfUploaded] = useState(false);
-            const [uploading, setUploading] = useState(false);
-            const [messages, setMessages] = useState([]);
-            const [inputMessage, setInputMessage] = useState('');
-            const [sending, setSending] = useState(false);
-            const [uploadedFile, setUploadedFile] = useState(null);
-            const messagesEndRef = useRef(null);
-            const fileInputRef = useRef(null);
+
+            const bots = [
+                {
+                    id: 1,
+                    name: 'PDF Chatbot',
+                    author: 'cvachet',
+                    likes: 369,
+                    description: 'Most popular option - Simple and effective interface for asking questions about your PDF documents',
+                    url: 'https://huggingface.co/spaces/cvachet/pdf-chatbot',
+                    icon: FileText,
+                    color: 'from-blue-500 to-cyan-500'
+                },
+                {
+                    id: 2,
+                    name: 'RAG PDF Chatbot',
+                    author: 'MuntasirHossain',
+                    likes: 68,
+                    description: 'Uses RAG (Retrieval-Augmented Generation) for better accuracy when querying PDF documents',
+                    url: 'https://huggingface.co/spaces/MuntasirHossain/RAG-PDF-Chatbot',
+                    icon: Zap,
+                    color: 'from-purple-500 to-pink-500'
+                }
+            ];
 
             const papers = [
                 {
@@ -195,210 +217,152 @@
                 }
             ];
 
-            useEffect(() => {
-                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }, [messages]);
-
-            const handleFileUpload = async (file) => {
-                if (!file || file.type !== 'application/pdf') {
-                    alert('Please select a PDF file');
-                    return;
-                }
-
-                setUploading(true);
-                const formData = new FormData();
-                formData.append('file', file);
-
-                try {
-                    const response = await fetch(`${API_URL}/api/upload`, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        setPdfUploaded(true);
-                        setUploadedFile(data.filename);
-                        setMessages([{
-                            role: 'system',
-                            content: `PDF "${data.filename}" uploaded successfully! Processed ${data.chunks} chunks. You can now ask questions about the paper.`
-                        }]);
-                    } else {
-                        alert('Upload failed: ' + data.error);
-                    }
-                } catch (error) {
-                    alert('Error uploading file: ' + error.message);
-                } finally {
-                    setUploading(false);
-                }
-            };
-
-            const handleSendMessage = async () => {
-                if (!inputMessage.trim() || !pdfUploaded) return;
-
-                const userMessage = inputMessage.trim();
-                setInputMessage('');
-                setSending(true);
-
-                setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-
-                try {
-                    const response = await fetch(`${API_URL}/api/chat`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            message: userMessage,
-                            session_id: 'default'
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        setMessages(prev => [...prev, {
-                            role: 'assistant',
-                            content: data.answer,
-                            sources: data.sources
-                        }]);
-                    } else {
-                        setMessages(prev => [...prev, {
-                            role: 'error',
-                            content: 'Error: ' + data.error
-                        }]);
-                    }
-                } catch (error) {
-                    setMessages(prev => [...prev, {
-                        role: 'error',
-                        content: 'Error sending message: ' + error.message
-                    }]);
-                } finally {
-                    setSending(false);
-                }
-            };
-
-            const handleSelectPaper = (paper) => {
-                setSelectedPaper(paper);
+            const handleSelectBot = (bot) => {
+                setSelectedBot(bot);
+                setView('chat');
             };
 
             const handleOpenInNewTab = (url) => {
                 window.open(url, '_blank', 'noopener,noreferrer');
             };
 
-            if (view === 'chat') {
+            const handleSelectPaper = (paper) => {
+                setSelectedPaper(paper);
+            };
+
+            const handleProceedToBots = () => {
+                setView('bots');
+            };
+
+            if (view === 'chat' && selectedBot) {
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4">
                         <div className="max-w-6xl mx-auto">
                             <div className="mb-6 flex items-center justify-between flex-wrap gap-3">
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setView('bots')}
+                                        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                                    >
+                                        ← Back to Bots
+                                    </button>
+                                    <button
+                                        onClick={() => setView('papers')}
+                                        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                                    >
+                                        📚 Browse Papers
+                                    </button>
+                                </div>
+                                <button
+                                    onClick={() => handleOpenInNewTab(selectedBot.url)}
+                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center gap-2"
+                                >
+                                    Open in New Tab
+                                    <ExternalLink size={16} />
+                                </button>
+                            </div>
+
+                            <div className="bg-gray-800 rounded-xl p-4 mb-4 border border-gray-700">
+                                <h2 className="text-2xl font-bold text-white mb-2">{selectedBot.name}</h2>
+                                <p className="text-gray-400 text-sm">by {selectedBot.author} • {selectedBot.likes} likes</p>
+                                {selectedPaper && (
+                                    <div className="mt-3 pt-3 border-t border-gray-600">
+                                        <p className="text-sm text-gray-400">Selected Paper:</p>
+                                        <p className="text-white font-semibold">{selectedPaper.title}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="bg-white rounded-xl shadow-2xl overflow-hidden" style={{ height: '700px' }}>
+                                <iframe
+                                    src={selectedBot.url}
+                                    className="w-full h-full"
+                                    title={selectedBot.name}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (view === 'bots') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-8">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="mb-6">
                                 <button
                                     onClick={() => setView('papers')}
                                     className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
                                 >
                                     ← Back to Papers
                                 </button>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-gray-400 text-sm">
-                                        {pdfUploaded ? `✓ ${uploadedFile}` : 'No PDF uploaded'}
-                                    </span>
-                                    <button
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center gap-2"
-                                    >
-                                        <Upload size={16} />
-                                        {pdfUploaded ? 'Change PDF' : 'Upload PDF'}
-                                    </button>
-                                </div>
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept=".pdf"
-                                    onChange={(e) => handleFileUpload(e.target.files[0])}
-                                    className="hidden"
-                                />
                             </div>
 
-                            {selectedPaper && (
-                                <div className="bg-gray-800 rounded-xl p-4 mb-4 border border-gray-700">
-                                    <h2 className="text-xl font-bold text-white mb-2">{selectedPaper.title}</h2>
-                                    <p className="text-gray-400 text-sm">{selectedPaper.authors} • {selectedPaper.date}</p>
-                                </div>
-                            )}
-
-                            <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden" style={{ height: '600px' }}>
-                                <div className="flex flex-col h-full">
-                                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                                        {messages.map((msg, idx) => (
-                                            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                                <div className={`max-w-3xl rounded-lg p-4 ${
-                                                    msg.role === 'user'
-                                                        ? 'bg-blue-600 text-white'
-                                                        : msg.role === 'error'
-                                                        ? 'bg-red-600 text-white'
-                                                        : msg.role === 'system'
-                                                        ? 'bg-green-600 text-white'
-                                                        : 'bg-gray-700 text-gray-100'
-                                                }`}>
-                                                    <p className="whitespace-pre-wrap">{msg.content}</p>
-                                                    {msg.sources && msg.sources.length > 0 && (
-                                                        <div className="mt-3 pt-3 border-t border-gray-600">
-                                                            <p className="text-xs text-gray-300 mb-2">Sources ({msg.sources.length}):</p>
-                                                            <div className="space-y-2">
-                                                                {msg.sources.map((source, sidx) => (
-                                                                    <details key={sidx} className="text-xs text-gray-300">
-                                                                        <summary className="cursor-pointer hover:text-white">
-                                                                            Source {sidx + 1}
-                                                                        </summary>
-                                                                        <p className="mt-1 pl-4 text-gray-400">{source.substring(0, 200)}...</p>
-                                                                    </details>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))}
-                                        {sending && (
-                                            <div className="flex justify-start">
-                                                <div className="bg-gray-700 rounded-lg p-4">
-                                                    <p className="text-gray-300">Thinking...</p>
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div ref={messagesEndRef} />
+                            <div className="text-center mb-12">
+                                <h1 className="text-5xl font-bold text-white mb-4">
+                                    Select Your AI Chatbot
+                                </h1>
+                                <p className="text-gray-400 text-lg">
+                                    Choose a chatbot to analyze your selected paper
+                                </p>
+                                {selectedPaper && (
+                                    <div className="mt-4 bg-gray-800 rounded-lg p-4 border border-gray-700">
+                                        <p className="text-sm text-gray-400">Selected Paper:</p>
+                                        <p className="text-white font-semibold">{selectedPaper.title}</p>
                                     </div>
+                                )}
+                            </div>
 
-                                    <div className="border-t border-gray-700 p-4">
-                                        <div className="flex gap-3">
-                                            <input
-                                                type="text"
-                                                value={inputMessage}
-                                                onChange={(e) => setInputMessage(e.target.value)}
-                                                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                                                placeholder={pdfUploaded ? "Ask a question about the paper..." : "Please upload a PDF first"}
-                                                disabled={!pdfUploaded || sending}
-                                                className="flex-1 bg-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                                            />
-                                            <button
-                                                onClick={handleSendMessage}
-                                                disabled={!pdfUploaded || sending || !inputMessage.trim()}
-                                                className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                <Send size={18} />
-                                            </button>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {bots.map((bot) => {
+                                    const Icon = bot.icon;
+                                    return (
+                                        <div
+                                            key={bot.id}
+                                            className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-xl hover:scale-105 cursor-pointer"
+                                            onClick={() => handleSelectBot(bot)}
+                                        >
+                                            <div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${bot.color} flex items-center justify-center mb-4`}>
+                                                <Icon size={32} />
+                                            </div>
+
+                                            <h3 className="text-2xl font-bold text-white mb-2">
+                                                {bot.name}
+                                            </h3>
+
+                                            <p className="text-gray-400 text-sm mb-4">
+                                                by {bot.author} • {bot.likes} likes
+                                            </p>
+
+                                            <p className="text-gray-300 mb-6">
+                                                {bot.description}
+                                            </p>
+
+                                            <div className="flex gap-3">
+                                                <button
+                                                    className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-lg transition-all font-semibold"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleSelectBot(bot);
+                                                    }}
+                                                >
+                                                    Use This Bot
+                                                </button>
+                                                <button
+                                                    className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleOpenInNewTab(bot.url);
+                                                    }}
+                                                >
+                                                    <ExternalLink size={18} />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    );
+                                })}
                             </div>
-
-                            {!pdfUploaded && (
-                                <div className="mt-6 bg-yellow-900 border border-yellow-700 rounded-xl p-4">
-                                    <p className="text-yellow-200 text-center">
-                                        Upload a PDF to start chatting. Download papers from the papers page!
-                                    </p>
-                                </div>
-                            )}
                         </div>
                     </div>
                 );
@@ -410,19 +374,18 @@
                         <div className="text-center mb-12">
                             <h1 className="text-5xl font-bold text-white mb-4">
                                 arXiv Paper Chat
-                                <span className="text-2xl ml-3 text-blue-400">Local Edition</span>
                             </h1>
                             <p className="text-gray-400 text-lg mb-6">
-                                Browse cutting-edge AI research papers and chat with them using LOCAL AI
+                                Browse cutting-edge AI research papers and chat with them using AI
                             </p>
-                            <div className="flex justify-center gap-3">
+                            {selectedPaper && (
                                 <button
-                                    onClick={() => setView('chat')}
+                                    onClick={handleProceedToBots}
                                     className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
                                 >
-                                    Open Chat Interface →
+                                    Proceed to Select Chatbot →
                                 </button>
-                            </div>
+                            )}
                         </div>
 
                         {papers.map((category, idx) => {
@@ -501,19 +464,13 @@
                         })}
 
                         <div className="mt-12 bg-gray-800 rounded-xl p-6 border border-gray-700">
-                            <h3 className="text-xl font-bold text-white mb-3">How to Use (Local Edition):</h3>
+                            <h3 className="text-xl font-bold text-white mb-3">How to Use:</h3>
                             <ol className="text-gray-300 space-y-2">
-                                <li>1. Make sure the Python backend is running (see README.md)</li>
-                                <li>2. Browse the papers above and download one that interests you</li>
-                                <li>3. Click "Open Chat Interface" above</li>
-                                <li>4. Upload the PDF you downloaded</li>
-                                <li>5. Start asking questions - all processing happens locally!</li>
+                                <li>1. Browse the papers above and select one that interests you</li>
+                                <li>2. Click "Download PDF" to get the paper</li>
+                                <li>3. Click "Proceed to Select Chatbot" to choose your AI assistant</li>
+                                <li>4. Upload the PDF to the chatbot and start asking questions!</li>
                             </ol>
-                            <div className="mt-4 p-4 bg-blue-900 border border-blue-700 rounded-lg">
-                                <p className="text-blue-200 text-sm">
-                                    <strong>Privacy First:</strong> Everything runs on your machine. No data is sent to external servers!
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -521,7 +478,7 @@
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<LocalArxivChat />);
+        root.render(<ArxivChatApp />);
     </script>
 </body>
 </html>
