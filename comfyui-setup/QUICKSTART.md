@@ -113,10 +113,14 @@ cp -r comfyui-setup/custom_nodes/* comfyui-setup/ComfyUI/custom_nodes/
 
 ## Next Steps
 
-1. **Read Full Documentation**: See `README.md` for detailed features
-2. **Explore HunyuanWorld-Mirror**: See `README-HUNYUAN.md` for capabilities
-3. **Try Multi-View**: Use multiple images for better quality
-4. **Experiment**: Adjust settings and explore different workflows
+1. **Use ComfyUI Manager**: Click the "Manager" button to install additional nodes and models
+   - Install custom nodes with one click
+   - Download models directly in the UI
+   - Keep everything up to date
+2. **Read Full Documentation**: See `README.md` for detailed features
+3. **Explore HunyuanWorld-Mirror**: See `README-HUNYUAN.md` for capabilities
+4. **Try Multi-View**: Use multiple images for better quality
+5. **Experiment**: Adjust settings and explore different workflows
 
 ## Quick Reference
 
@@ -144,6 +148,7 @@ cp -r comfyui-setup/custom_nodes/* comfyui-setup/ComfyUI/custom_nodes/
 - **URL**: http://localhost:8188
 - **API**: http://localhost:8188/api/
 - **Docs**: Click "?" in interface
+- **Manager**: Click "Manager" button to install extensions
 
 ## Support
 

@@ -97,6 +97,26 @@ pip install -r requirements-comfyui.txt
 echo -e "${GREEN}Additional ComfyUI requirements installed${NC}"
 echo ""
 
+# Install ComfyUI Manager
+echo -e "${BLUE}Setting up ComfyUI Manager...${NC}"
+cd "$SETUP_DIR/ComfyUI/custom_nodes"
+if [ ! -d "ComfyUI-Manager" ]; then
+    echo "Cloning ComfyUI-Manager repository..."
+    git clone https://github.com/ltdrdata/ComfyUI-Manager.git
+    cd ComfyUI-Manager
+    pip install -r requirements.txt 2>/dev/null || echo "No additional requirements for ComfyUI-Manager"
+    cd "$SETUP_DIR"
+    echo -e "${GREEN}ComfyUI-Manager installed successfully${NC}"
+else
+    echo "ComfyUI-Manager already exists, updating..."
+    cd ComfyUI-Manager
+    git pull
+    pip install -r requirements.txt 2>/dev/null || echo "No additional requirements for ComfyUI-Manager"
+    cd "$SETUP_DIR"
+    echo -e "${GREEN}ComfyUI-Manager updated${NC}"
+fi
+echo ""
+
 # Install HunyuanWorld-Mirror
 echo -e "${BLUE}Setting up HunyuanWorld-Mirror...${NC}"
 cd "$SETUP_DIR"
@@ -147,6 +167,12 @@ echo -e "${GREEN}=========================================="
 echo -e "Installation Complete!"
 echo -e "==========================================${NC}"
 echo ""
+echo -e "${BLUE}Installed Components:${NC}"
+echo "  ✓ ComfyUI - Main application"
+echo "  ✓ ComfyUI Manager - Plugin manager for easy extension installation"
+echo "  ✓ HunyuanWorld-Mirror - 3D reconstruction model"
+echo "  ✓ Custom nodes for HunyuanWorld-Mirror"
+echo ""
 echo -e "${BLUE}Next Steps:${NC}"
 echo "1. Download HunyuanWorld-Mirror models from:"
 echo "   https://huggingface.co/tencent/HunyuanWorld-Mirror"
@@ -161,5 +187,11 @@ echo "   python main.py"
 echo ""
 echo "4. Access ComfyUI at: http://localhost:8188"
 echo ""
-echo -e "${BLUE}For model download instructions, see:${NC}"
-echo "   $SETUP_DIR/README-HUNYUAN.md"
+echo "5. Use ComfyUI Manager to install additional custom nodes:"
+echo "   - Click the 'Manager' button in ComfyUI interface"
+echo "   - Browse and install nodes, models, and extensions"
+echo ""
+echo -e "${BLUE}For more information:${NC}"
+echo "   Model download: $SETUP_DIR/README-HUNYUAN.md"
+echo "   Quick start: $SETUP_DIR/QUICKSTART.md"
+echo "   Full guide: $SETUP_DIR/README.md"

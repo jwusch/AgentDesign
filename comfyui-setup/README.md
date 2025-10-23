@@ -18,6 +18,7 @@ HunyuanWorld-Mirror is a cutting-edge feed-forward model for comprehensive 3D ge
 - **Depth & Normal Estimation**: Extract geometric information from images
 - **Camera Parameter Estimation**: Automatic camera calibration
 - **ComfyUI Integration**: Easy-to-use visual workflow interface
+- **ComfyUI Manager**: Built-in extension manager for installing custom nodes, models, and workflows
 
 ## Directory Structure
 
@@ -68,10 +69,11 @@ The installation script will:
 1. Check system requirements
 2. Create a Python virtual environment
 3. Clone ComfyUI repository
-4. Clone HunyuanWorld-Mirror repository
-5. Install all dependencies
-6. Set up custom nodes
-7. Create necessary directory structure
+4. Install ComfyUI Manager extension
+5. Clone HunyuanWorld-Mirror repository
+6. Install all dependencies
+7. Set up custom nodes
+8. Create necessary directory structure
 
 ### Manual Installation
 
@@ -92,17 +94,24 @@ cd ComfyUI
 pip install -r requirements.txt
 cd ..
 
-# 4. Clone HunyuanWorld-Mirror
+# 4. Install ComfyUI Manager
+cd ComfyUI/custom_nodes
+git clone https://github.com/ltdrdata/ComfyUI-Manager.git
+cd ComfyUI-Manager
+pip install -r requirements.txt
+cd ../../..
+
+# 5. Clone HunyuanWorld-Mirror
 git clone https://github.com/Tencent-Hunyuan/HunyuanWorld-Mirror.git
 cd HunyuanWorld-Mirror
 pip install -e .
 cd ..
 
-# 5. Install additional dependencies
+# 6. Install additional dependencies
 pip install -r requirements-comfyui.txt
 pip install -r requirements-hunyuan.txt
 
-# 6. Copy custom nodes
+# 7. Copy custom nodes
 cp -r custom_nodes/* ComfyUI/custom_nodes/
 ```
 
@@ -179,6 +188,54 @@ http://localhost:8188
 4. Load `hunyuan_basic_workflow.json`
 5. Upload an input image
 6. Click "Queue Prompt" to run the workflow
+
+### Using ComfyUI Manager
+
+ComfyUI Manager is a powerful extension that makes it easy to manage custom nodes, models, and other extensions.
+
+**Accessing ComfyUI Manager:**
+
+1. Start ComfyUI
+2. Look for the **"Manager"** button in the interface (usually in the menu bar)
+3. Click it to open the Manager panel
+
+**Key Features:**
+
+- **Install Custom Nodes**: Browse and install thousands of community-created nodes
+  - Click "Install Custom Nodes"
+  - Search or browse available nodes
+  - Click "Install" on any node you want
+  - Restart ComfyUI to use the new nodes
+
+- **Install Models**: Download models directly through the interface
+  - Click "Install Models"
+  - Choose from Checkpoints, LoRAs, VAEs, ControlNet, and more
+  - Select models and click "Install"
+
+- **Update Extensions**: Keep all your custom nodes up to date
+  - Click "Update All" to update all installed extensions
+  - Or update individual nodes selectively
+
+- **Install Missing Nodes**: Automatically install nodes required by workflows
+  - Load a workflow that uses custom nodes you don't have
+  - Manager will detect missing nodes
+  - Click "Install Missing Nodes"
+
+**Recommended Extensions for 3D Work:**
+
+Through ComfyUI Manager, you can install additional nodes that complement HunyuanWorld-Mirror:
+
+- **ComfyUI-3D-Pack**: Additional 3D processing nodes
+- **ControlNet nodes**: For better control over generation
+- **Image processing nodes**: For pre-processing input images
+- **Video processing nodes**: For video-to-3D workflows
+
+**Troubleshooting:**
+
+If Manager button doesn't appear:
+1. Verify installation: `ls ComfyUI/custom_nodes/ComfyUI-Manager`
+2. Restart ComfyUI completely
+3. Check console for error messages
 
 ### Available Nodes
 
