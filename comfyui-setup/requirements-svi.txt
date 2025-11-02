@@ -1,0 +1,32 @@
+# Stable Video Infinity (SVI) Requirements
+# Install with: pip install -r requirements-svi.txt
+
+# Core dependencies
+torch>=2.5.0
+torchvision>=0.20.0
+torchaudio>=2.5.0
+
+# Flash Attention for faster inference (optional but highly recommended)
+flash-attn==2.8.0
+
+# Memory-efficient attention mechanisms
+xformers>=0.0.28
+
+# HuggingFace utilities for model downloads
+huggingface-hub>=0.25.0
+
+# Video processing
+opencv-python>=4.10.0
+imageio>=2.35.0
+imageio-ffmpeg>=0.5.1
+
+# Additional utilities
+einops>=0.8.0
+safetensors>=0.4.5
+omegaconf>=2.3.0
+
+# Optional: Faster video encoding
+# av>=13.1.0
+
+# Note: ComfyUI-WanVideoWrapper dependencies are installed separately
+# via the custom node's requirements.txt

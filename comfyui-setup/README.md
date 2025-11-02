@@ -1,6 +1,8 @@
-# ComfyUI with HunyuanWorld-Mirror Setup
+# ComfyUI Setup - Multi-Modal AI Generation
 
-This directory contains a complete setup for running ComfyUI with HunyuanWorld-Mirror, Tencent's universal 3D world reconstruction model.
+This directory contains a complete setup for running ComfyUI with multiple advanced AI models:
+- **HunyuanWorld-Mirror**: Tencent's universal 3D world reconstruction model
+- **Stable Video Infinity (SVI)**: Infinite-length video generation with WAN 2.1
 
 ## What is HunyuanWorld-Mirror?
 
@@ -12,12 +14,24 @@ HunyuanWorld-Mirror is a cutting-edge feed-forward model for comprehensive 3D ge
 
 ## Features
 
+### HunyuanWorld-Mirror (3D Reconstruction)
 - **Universal 3D Reconstruction**: Convert images and videos to 3D models
 - **Multi-Modal Prior Prompting**: Use depth, camera, and other priors
 - **Multiple Output Formats**: Point clouds, meshes, Gaussian splats
 - **Depth & Normal Estimation**: Extract geometric information from images
 - **Camera Parameter Estimation**: Automatic camera calibration
-- **ComfyUI Integration**: Easy-to-use visual workflow interface
+
+### Stable Video Infinity (SVI) - NEW!
+- **Infinite-Length Video Generation**: Create videos of ANY duration
+- **Error Recycling**: Prevents motion drift and color degradation
+- **Multi-Scene Narratives**: Professional storytelling with smooth transitions
+- **ControlNet Support**: Dance and motion-guided animation
+- **LoRA-based**: Efficient fine-tuning with minimal resources
+
+### ComfyUI Integration
+- **Visual Workflow Interface**: Easy-to-use node-based composition
+- **Custom Nodes**: Pre-configured for all models
+- **Example Workflows**: Ready-to-use templates
 
 ## Directory Structure
 
@@ -25,22 +39,32 @@ HunyuanWorld-Mirror is a cutting-edge feed-forward model for comprehensive 3D ge
 comfyui-setup/
 ├── ComfyUI/                    # ComfyUI installation (created by install.sh)
 ├── HunyuanWorld-Mirror/        # HunyuanWorld-Mirror repository (created by install.sh)
-├── custom_nodes/               # Custom ComfyUI nodes for Hunyuan
+├── custom_nodes/               # Custom ComfyUI nodes
 │   ├── __init__.py
 │   └── hunyuan_nodes.py
 ├── models/                     # Model files directory
-│   └── hunyuan/
-│       ├── checkpoints/        # Place model checkpoints here
-│       ├── configs/            # Model configurations
-│       └── vae/                # VAE models
+│   ├── hunyuan/                # HunyuanWorld-Mirror models
+│   │   ├── checkpoints/
+│   │   ├── configs/
+│   │   └── vae/
+│   └── loras/                  # SVI LoRA models
+│       └── stable-video-infinity/
 ├── scripts/                    # Installation and utility scripts
-│   ├── install.sh             # Main installation script
-│   └── start.sh               # ComfyUI startup script
+│   ├── install.sh              # Main ComfyUI installation script
+│   ├── install_svi.sh          # SVI setup script
+│   ├── download_svi_models.py  # Download SVI LoRA models
+│   └── start.sh                # ComfyUI startup script
 ├── workflows/                  # Example workflows
-│   └── hunyuan_basic_workflow.json
+│   ├── hunyuan_basic_workflow.json
+│   └── svi/                    # SVI workflow templates
+│       └── README.md
 ├── requirements-comfyui.txt    # ComfyUI dependencies
 ├── requirements-hunyuan.txt    # HunyuanWorld-Mirror dependencies
-└── README.md                   # This file
+├── requirements-svi.txt        # Stable Video Infinity dependencies
+├── README.md                   # This file (main documentation)
+├── README-HUNYUAN.md           # Detailed Hunyuan documentation
+├── README-SVI.md               # Detailed SVI documentation
+└── QUICKSTART-SVI.md           # SVI quick start guide
 ```
 
 ## Prerequisites
@@ -396,4 +420,25 @@ pip install -r requirements-hunyuan.txt --upgrade
 
 ---
 
-For detailed information about HunyuanWorld-Mirror capabilities and architecture, see [README-HUNYUAN.md](README-HUNYUAN.md)
+## Additional Documentation
+
+- **HunyuanWorld-Mirror**: See [README-HUNYUAN.md](README-HUNYUAN.md) for detailed 3D reconstruction documentation
+- **Stable Video Infinity**: See [README-SVI.md](README-SVI.md) for comprehensive SVI documentation
+- **SVI Quick Start**: See [QUICKSTART-SVI.md](QUICKSTART-SVI.md) for rapid SVI setup (15 minutes)
+
+## Quick Setup - Stable Video Infinity
+
+To add SVI capabilities to your ComfyUI installation:
+
+```bash
+# From the comfyui-setup directory
+bash scripts/install_svi.sh
+```
+
+This will:
+1. Install ComfyUI-WanVideoWrapper custom nodes
+2. Download SVI LoRA models (~1 GB)
+3. Download WAN 2.1 base model (~28 GB)
+4. Set up workflows and documentation
+
+For detailed SVI setup, see [README-SVI.md](README-SVI.md)
