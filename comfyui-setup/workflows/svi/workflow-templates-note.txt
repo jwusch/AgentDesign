@@ -1,0 +1,63 @@
+SVI WORKFLOW TEMPLATES - IMPORTANT NOTE
+========================================
+
+The actual ComfyUI workflow JSON files for SVI can be obtained from:
+
+1. Official SVI Repository:
+   https://github.com/vita-epfl/Stable-Video-Infinity/tree/main/comfyui_workflow
+
+   Download these workflows and place them in this directory.
+
+2. Community Workflows:
+   Check the ComfyUI community for user-contributed SVI workflows:
+   - https://comfyworkflows.com/
+   - ComfyUI Discord #video-generation channel
+   - Reddit r/ComfyUI
+
+3. Video Tutorial Attachments:
+   The original tutorial mentioned these workflow files:
+   - Wan 2.1 VACE (Native) - SVI - CN V2V - Long Video Gen (Unlimited Length) - Version 20251102.zip
+   - Wan 2.1 Img2Vid SVI-Film (Native) - (Long Video) (All-In For Loop Structure) (Ver. 20251101).zip
+
+   If you have these files, extract and place the JSON workflows here.
+
+WORKFLOW REQUIREMENTS:
+======================
+
+ComfyUI workflows for SVI need the following nodes:
+- WanModelLoader (from ComfyUI-WanVideoWrapper)
+- LoraLoader (standard ComfyUI)
+- KSamplerAdvanced (standard ComfyUI)
+- VideoLoopController (from ComfyUI-WanVideoWrapper)
+- ErrorRecyclingNode (from ComfyUI-WanVideoWrapper or SVI custom nodes)
+
+CREATING YOUR OWN WORKFLOWS:
+============================
+
+You can create custom SVI workflows in ComfyUI by:
+
+1. Load the WAN 2.1 model using WanModelLoader
+2. Add LoraLoader node and select SVI LoRA
+3. Set up KSampler with proper settings:
+   - Padding mode: constant
+   - Padding value: 0.0
+4. Configure loop structure for multiple clips
+5. Add error recycling mechanism
+6. Set up concatenation for final video
+
+See README-SVI.md for detailed node configuration instructions.
+
+TESTING WORKFLOWS:
+==================
+
+Once you have workflow JSON files:
+1. Place them in this directory (workflows/svi/)
+2. Start ComfyUI
+3. Load workflow via "Load" button
+4. Verify all nodes are recognized
+5. Configure inputs and parameters
+6. Test with short generation first
+
+For support and workflow sharing:
+- ComfyUI Discord: https://discord.gg/comfyui
+- SVI GitHub Issues: https://github.com/vita-epfl/Stable-Video-Infinity/issues
